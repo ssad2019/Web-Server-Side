@@ -35,8 +35,13 @@ function createTables()
     $mysql->query('CREATE TABLE IF NOT EXISTS user (
         id INTEGER AUTO_INCREMENT PRIMARY KEY,
         username VARCHAR(32) UNIQUE NOT NULL,
-        passwd VARCHAR(255) NOT NULL
+        passwd VARCHAR(255) NOT NULL,
+        nickname VARCHAR(255) DEFAULT \'\',
+        description VARCHAR(255) DEFAULT \'\',
+        avatar VARCHAR(255) DEFAULT \'\'
     ) DEFAULT CHARSET = utf8');
+
+
     //ENGINE = InnoDB 
     if ($mysql->error) die($mysql->error);
     $mysql->close();
@@ -101,6 +106,70 @@ function addUser($username, $passwd)
     $mysql = initConnection();
     $stmt = $mysql->prepare("INSERT IGNORE INTO user (username, passwd) VALUES (?, ?)");
     $stmt->bind_param("ss", $username, $passwd);
+    $stmt->execute();
+    $stmt->store_result();
+
+    $stmt->close();
+    $mysql->close();
+}
+
+/**
+ * 更改商家头像
+ * 
+ * @param int $userid 用户ID
+ * @param string $image 头像链接
+ * @return void
+ */
+function editUserAvatarLink($userid, $image)
+{
+    $mysql = initConnection();
+    $stmt = $mysql->prepare("UPDATE user SET avatar = ? WHERE id = ?");
+    $stmt->bind_param("si", $image, $userid);
+    $stmt->execute();
+    $stmt->store_result();
+
+    $stmt->close();
+    $mysql->close();
+}
+
+/**
+ * 获取商家信息
+ * 
+ * @param int $userid 用户ID
+ * @return array 包含昵称($nickname)、描述($description)、图标($icon)的数组
+ */
+function getUserInfo($userid)
+{
+    $mysql = initConnection();
+    $stmt = $mysql->prepare("SELECT nickname, description, avatar FROM user WHERE id = ?");
+    $stmt->bind_param("i", $userid);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows <= 0) return array();
+
+    $stmt->bind_result($nickname, $description, $avatar);
+    $stmt->fetch();
+
+    $stmt->close();
+    $mysql->close();
+
+    return array('name' => $nickname, 'description' => $description, 'icon' => $avatar);
+}
+
+/**
+ * 修改用户信息
+ * 
+ * @param int $userId 用户ID
+ * @param string $nickname 用户昵称
+ * @param string $description 用户描述
+ * @return void
+ */
+function editUserInfo($userId, $nickname, $description = "")
+{
+    $mysql = initConnection();
+    $stmt = $mysql->prepare( "UPDATE user SET nickname = ?, description = ? WHERE id = ?");
+    $stmt->bind_param("ssi", $nickname, $description, $userId);
     $stmt->execute();
     $stmt->store_result();
 
