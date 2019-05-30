@@ -5,15 +5,15 @@
  * 主要负责与数据库进行交互并进行逻辑判断，以进行用户登录验证。
  * 
  * @author  Mikualpha
- * @version 1.0
+ * @version 1.1
  */
 
 use \Lcobucci\JWT\Builder;
 use \Lcobucci\JWT\Signer\Hmac\Sha256;
 use \Lcobucci\JWT\Parser;
 
-include('../vendor/autoload.php');
-include('../includes/database.php');
+require('../vendor/autoload.php');
+include_once('../includes/database.php');
 include_once('../settings/settings.php');
 
 /**
@@ -69,10 +69,10 @@ function generateToken($username, $passwd)
  * @param string $input Token(可选输入,不输入则默认从HTTP Header的Authorization取出)
  * @return string|bool 成功时返回用户名，失败时返回false
  */
-function verifyToken($input = null)
+function verifyToken($input = '')
 {
     $token = isset($_SERVER['HTTP_AUTHORIZATION']) ? $_SERVER['HTTP_AUTHORIZATION'] : '';
-    if (isset($input)) $token = $input;
+    if (!empty($input)) $token = $input;
     if (!isset($token)) return false;
 
     try {
@@ -80,7 +80,7 @@ function verifyToken($input = null)
         $parse = (new Parser())->parse($token);
 
         $username = $parse->getClaim('jti');
-        $hash = passwordHash( getUserPasswdHash($username) );
+        $hash = getUserPasswdHash($username);
         //验证token合法性
         if (!$parse->verify($signer, SHA256_PRIVATE_KEY . getTokenCaptcha($hash))) return false;
 
@@ -130,7 +130,7 @@ function passwordHash($passwd)
 }
 
 /**
- * 获取用户对应的信息，以生成Token
+ * 获取用户对应的特殊信息，以生成Token
  * 
  * @param string $passwd 用户的密码Hash值
  * @return string 验证字符串
@@ -138,6 +138,18 @@ function passwordHash($passwd)
 function getTokenCaptcha($passwd)
 {
     return substr($passwd, -8);
+}
+
+/**
+ * 获取用户ID
+ * 
+ * @param string $username 用户名
+ * @return int|bool 成功时返回用户ID，失败时返回false
+ */
+function getUserId($username)
+{
+    if ($username === false) return false;
+    return (int)getIdByUsername($username);
 }
 
 /**
