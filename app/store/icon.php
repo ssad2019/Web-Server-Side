@@ -7,10 +7,6 @@
  * @author  MikuAlpha
  * @version 1.0
  */
-
-ini_set("display_errors", "On");
-error_reporting(E_ALL);
-
 include(__DIR__ . '/../../includes/file_upload.php');
 include(__DIR__ . '/../../includes/functions.php');
 include(__DIR__ . '/../../includes/database.php');
