@@ -7,10 +7,14 @@
  * @author  MikuAlpha
  * @version 1.0
  */
-include('../../includes/file_upload.php');
-include('../../includes/functions.php');
-include('../../includes/database.php');
-include('../../includes/auth.php');
+
+ini_set("display_errors", "On");
+error_reporting(E_ALL);
+
+include(__DIR__ . '/../../includes/file_upload.php');
+include(__DIR__ . '/../../includes/functions.php');
+include(__DIR__ . '/../../includes/database.php');
+include(__DIR__ . '/../../includes/auth.php');
 
 $userid = getUserId(verifyToken());
 if (!$userid) returnJson(401);

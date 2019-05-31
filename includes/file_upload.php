@@ -8,9 +8,9 @@
  * @version 1.0
  */
 
-require_once('../vendor/autoload.php');
+require(__DIR__ . '/../vendor/autoload.php');
 
-include('../settings/settings.php');
+include(__DIR__ . '/../settings/settings.php');
 
 use OSS\Core\OssException;
 use OSS\OssClient;

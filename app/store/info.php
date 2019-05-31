@@ -7,9 +7,9 @@
  * @author  MikuAlpha
  * @version 1.0
  */
-include('../../includes/functions.php');
-include('../../includes/database.php');
-include('../../includes/auth.php');
+include(__DIR__ . '/../../includes/functions.php');
+include(__DIR__ . '/../../includes/database.php');
+include(__DIR__ . '/../../includes/auth.php');
 
 $userid = getUserId(verifyToken());
 if (!$userid) returnJson(401);

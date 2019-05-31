@@ -8,7 +8,7 @@
  * @version 1.0
  */
 
-include_once('../settings/settings.php');
+include_once(__DIR__ . '/../settings/settings.php');
 
 createTables();
 

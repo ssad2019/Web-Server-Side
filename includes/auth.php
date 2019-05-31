@@ -12,9 +12,9 @@ use \Lcobucci\JWT\Builder;
 use \Lcobucci\JWT\Signer\Hmac\Sha256;
 use \Lcobucci\JWT\Parser;
 
-require('../vendor/autoload.php');
-include_once('../includes/database.php');
-include_once('../settings/settings.php');
+require(__DIR__ . '/../vendor/autoload.php');
+include_once(__DIR__ . '/../includes/database.php');
+include_once(__DIR__ . '/../settings/settings.php');
 
 /**
  * 验证已存在的用户名与密码是否匹配
