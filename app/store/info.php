@@ -7,7 +7,6 @@
  * @author  MikuAlpha
  * @version 1.0
  */
-include('../../includes/file_upload.php');
 include('../../includes/functions.php');
 include('../../includes/database.php');
 include('../../includes/auth.php');
@@ -32,7 +31,7 @@ function getInfo() {
     $userInfo = getUserInfo($userid);
 
     //若头像为空，则设置为默认头像
-    if ($userInfo['icon'] == '') $userInfo['icon'] = 'https://secure.gravatar.com/avatar/';
+    if ($userInfo['icon'] == '') $userInfo['icon'] = DEFAULT_AVATAR;
 
     returnJson(200, $userInfo);
 }

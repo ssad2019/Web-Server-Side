@@ -15,6 +15,13 @@ include('../settings/settings.php');
 use OSS\Core\OssException;
 use OSS\OssClient;
 
+/**
+ * 上传图片
+ * 
+ * @param string $path 图片路径(可为空)
+ * @param string $filename 图片文件名(可为空)
+ * @return string 存储的文件名
+ */
 function uploadImage($path = '', $filename = '') {
     try {
         $ossClient = new OssClient(
@@ -33,9 +40,14 @@ function uploadImage($path = '', $filename = '') {
     if ($filename == '') $filename = generateFileName();
 
     $ossClient->uploadFile(OSS_BUCKET_NAME, $filename, $path);
-    return "https://" . OSS_BUCKET_NAME . "." .  OSS_ENDPOINT . "/" . $filename;
+    return $filename;
 }
 
+/**
+ * 生成存储文件名
+ * 
+ * @return 根据时间生成的文件名
+ */
 function generateFileName() {
     $ext = substr($_FILES['file']['name'], strrpos($_FILES['file']['name'], '.') + 1); //上传文件后缀
     list($msec, $sec) = explode(' ', microtime());

@@ -7,6 +7,7 @@
  * @author  MikuAlpha
  * @version 1.0
  */
+include_once('../settings/settings.php');
 
 //状态码列表
 const STATUS_CODE = array(
@@ -48,3 +49,66 @@ function returnJson($httpCode, $jsonObj = array())
     if (count($jsonObj) > 0) $outputs['data'] = $jsonObj;
     die(json_encode($outputs));
 }
+
+/**
+ * 验证当前协议是否为HTTPS
+ * 
+ * @return bool
+ */
+function isHttps()
+{
+    if (!empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off') {
+        return true;
+    } elseif ( isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https' ) {
+        return true;
+    } elseif ( !empty($_SERVER['HTTP_FRONT_END_HTTPS']) && strtolower($_SERVER['HTTP_FRONT_END_HTTPS']) !== 'off') {
+        return true;
+    }
+    return false;
+}
+
+/**
+ * 生成图片链接
+ * 
+ * @param string $filename 存储的文件名
+ * @return string 生成的链接
+ */
+function getImageLink($filename) {
+    return (isHttps() ? 'https' : 'http') . '://' . HOST_NAME . '/pic.php?file=' . $filename;
+}
+
+/**
+ * 获取图片类型
+ * 
+ * @param string $image 图片文件名
+ * @return string 文件后缀
+ */
+function getImageType($image) {
+    $type = strrchr($image, ".");
+    $type = str_replace(".", "", $type);
+    return $type;
+}
+
+/**
+ * 获取图片并返回
+ * 
+ * @param string $filename 请求文件名
+ * @return void
+ */
+function getImage($filename) {
+    $url = "https://" . OSS_INTERNAL_DOMAIN  . '/' . $filename;
+
+    switch (getImageType(($filename))) {
+        case 'png':
+            header('Content-Type:image/png');
+            break;
+        case 'jpg': case 'jpeg':
+            header('Content-Type:image/jpeg');
+            break;
+        default:
+            http_response_code(400);
+            die();
+    }
+    die(file_get_contents($url));
+}
+

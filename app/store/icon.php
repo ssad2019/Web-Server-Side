@@ -27,7 +27,7 @@ if (!in_array($type, $allow_type)) returnJson(400);
 //判断是否是通过HTTP POST上传的
 if (!is_uploaded_file($file['tmp_name'])) returnJson(403);
 
-$link = uploadImage();
-editUserAvatarLink($userid, $link);
+$filename = uploadImage();
+editUserAvatarLink($userid, $filename);
 
-returnJson(200, array('link' => $link));
+returnJson(200, array('link' => getImageLink($filename)));
