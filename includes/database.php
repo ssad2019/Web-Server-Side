@@ -40,7 +40,33 @@ function createTables()
         description VARCHAR(255) DEFAULT \'\',
         avatar VARCHAR(255) DEFAULT \'\'
     ) DEFAULT CHARSET = utf8');
-
+    $mysql->query('CREATE TABLE IF NOT EXISTS type (
+        id INTEGER AUTO_INCREMENT PRIMARY KEY,
+        userid INTEGER NOT NULL,
+        typename VARCHAR(32) NOT NULL,
+        constraint t_u_fk foreign key (userid) references user (id) on update cascade on delete cascade
+    ) DEFAULT CHARSET = utf8');
+    $mysql->query('CREATE TABLE IF NOT EXISTS menu (
+        id INTEGER AUTO_INCREMENT PRIMARY KEY,
+		userid INTEGER NOT NULL,
+		typeid INTEGER NOT NULL,
+        foodname VARCHAR(32) NOT NULL,
+        price DECIMAL(8,2) NOT NULL,
+        description VARCHAR(255) DEFAULT \'\',
+        imgurl VARCHAR(255) DEFAULT \'\',
+        constraint m_u_fk1 foreign key (userid) references user (id) on update cascade on delete cascade,
+        constraint m_t_fk2 foreign key (typeid) references type (id) on update cascade on delete cascade
+    ) DEFAULT CHARSET = utf8');
+    $mysql->query('CREATE TABLE IF NOT EXISTS order (
+        id INTEGER AUTO_INCREMENT PRIMARY KEY,
+		userid INTEGER NOT NULL,
+		site INTEGER NOT NULL,
+        ordertime Datetime NOT NULL,
+        status Boolean NOT NULL,
+        info Text DEFAULT \'\',
+        imgurl VARCHAR(255) DEFAULT \'\',
+        constraint o_u_fk foreign key (userid) references user (id) on update cascade on delete cascade
+    ) DEFAULT CHARSET = utf8');
 
     //ENGINE = InnoDB 
     if ($mysql->error) die($mysql->error);
