@@ -41,31 +41,29 @@ function createTables()
         avatar VARCHAR(255) DEFAULT \'\'
     ) DEFAULT CHARSET = utf8');
     $mysql->query('CREATE TABLE IF NOT EXISTS type (
-        id INTEGER AUTO_INCREMENT,
+        id INTEGER AUTO_INCREMENT PRIMARY KEY,
         userid INTEGER NOT NULL,
         typename VARCHAR(32) NOT NULL,
-        PRIMARY KEY (userid, typename),
         CONSTRAINT t_u_fk FOREIGN KEY (userid) REFERENCES user (id) ON UPDATE CASCADE ON DELETE CASCADE
     ) DEFAULT CHARSET = utf8');
     $mysql->query('CREATE TABLE IF NOT EXISTS menu (
-        id INTEGER AUTO_INCREMENT,
+        id INTEGER AUTO_INCREMENT PRIMARY KEY,
 		userid INTEGER NOT NULL,
 		typeid INTEGER NOT NULL,
         foodname VARCHAR(32) NOT NULL,
         price DECIMAL(8,2) NOT NULL,
         description VARCHAR(255) DEFAULT \'\',
         imgurl VARCHAR(255) DEFAULT \'\',
-        PRIMARY KEY (userid, typeid, foodname),
         CONSTRAINT m_u_fk1 FOREIGN KEY (userid) REFERENCES user (id) ON UPDATE CASCADE ON DELETE CASCADE,
         CONSTRAINT m_t_fk2 FOREIGN KEY (typeid) REFERENCES type (id) ON UPDATE CASCADE ON DELETE CASCADE
     ) DEFAULT CHARSET = utf8');
-    $mysql->query('CREATE TABLE IF NOT EXISTS order (
+    $mysql->query('CREATE TABLE IF NOT EXISTS list (
         id INTEGER AUTO_INCREMENT PRIMARY KEY,
 		userid INTEGER NOT NULL,
 		site INTEGER NOT NULL,
         ordertime Datetime NOT NULL,
         status Boolean NOT NULL,
-        info Text DEFAULT \'\',
+        info Text NOT NULL,
         imgurl VARCHAR(255) DEFAULT \'\',
         CONSTRAINT o_u_fk FOREIGN KEY (userid) REFERENCES user (id) ON UPDATE CASCADE ON DELETE CASCADE
     ) DEFAULT CHARSET = utf8');
