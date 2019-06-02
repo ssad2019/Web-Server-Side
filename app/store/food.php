@@ -37,8 +37,6 @@ function putFood() {
 
 function postFood() {
     parse_str(file_get_contents('php://input'), $data);
-	if (!isset($data['foodid']) || !isset($data['typeid']) || !isset($data['foodname']) || !isset($data['price']) || !isset($data['description']) || !isset($data['imgurl'])) 
-		returnJson(400);
     if(!findFood($data['foodid']))
         returnJson(400);
 	modifyFood($data['foodid'], $data['typeid'], $data['foodname'], $data['price'], $data['description'], $data['imgurl']);
