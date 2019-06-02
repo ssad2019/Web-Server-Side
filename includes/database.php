@@ -342,7 +342,7 @@ function getFoodList($userid) {
     $stmt->execute();
     $stmt->store_result();
 
-    if ($stmt->num_rows <= 0) return array()
+    if ($stmt->num_rows <= 0) return array();
 
     $stmt->bind_result($id, $typeid, $foodname, $price, $description, $imgurl);
     $foodList = array();
