@@ -7,6 +7,7 @@
  * @author  MikuAlpha
  * @version 1.1
  */
+include_once(__DIR__ . '/../settings/settings.php');
 
 //状态码列表
 const STATUS_CODE = array(
