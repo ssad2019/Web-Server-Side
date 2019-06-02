@@ -5,9 +5,8 @@
  * 此处放置一些无法明确分类的函数。
  * 
  * @author  MikuAlpha
- * @version 1.0
+ * @version 1.1
  */
-include_once(__DIR__ . '/../settings/settings.php');
 
 //状态码列表
 const STATUS_CODE = array(
@@ -46,7 +45,7 @@ function returnJson($httpCode, $jsonObj = array())
     $outputs = array();
     $outputs['status'] = $httpCode;
     $outputs['msg'] = STATUS_CODE[$httpCode];
-    if (count($jsonObj) > 0) $outputs['data'] = $jsonObj;
+    if (count($jsonObj) > 0 || $jsonObj === null) $outputs['data'] = $jsonObj;
     die(json_encode($outputs));
 }
 
