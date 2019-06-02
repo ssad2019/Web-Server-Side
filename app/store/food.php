@@ -52,5 +52,5 @@ function removeFood() {
     if(!findFood($data['foodid']))
         returnJson(400);
 	deleteFood($data['foodid']);
-	returnJson(200)
+	returnJson(200);
 }
