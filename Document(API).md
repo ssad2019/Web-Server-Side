@@ -389,9 +389,9 @@ PUT /store/food.php
 ```
 foodtype: 商品分类(从已有的分类中选取,传入对应分类编号)
 foodname: 商品名称
-foodicon: 商品图标对应的服务器保存的图片路径
 price: 商品价格
 description: 商品描述
+imgurl: 商品图标对应的服务器保存的图片路径
 ```
 
 输出(JSON格式):
@@ -424,9 +424,9 @@ POST /store/food.php
 ```
 foodtype: 商品新的分类(有修改就是新的，没修改就是原本的，下同，而且只能选取已有分类)
 foodname: 商品新的名称
-foodicon: 商品新的图标对应的服务器保存的图片路径
 price: 商品新的价格
 description: 商品新的描述
+imgurl: 商品新的图标对应的服务器保存的图片路径
 ```
 
 输出(JSON格式):
