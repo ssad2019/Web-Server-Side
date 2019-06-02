@@ -228,6 +228,28 @@ function addType($userid, $typename)
 }
 
 /** 
+ * 检查分类是否存在（安全起见，不应直接调用此函数）
+ * 
+ * @param integer $typeid 分类ID
+ * @return bool 是否存在
+ */
+function findType($typeid)
+{
+    $mysql = initConnection();
+    $stmt = $mysql->prepare("SELECT * FROM type WHERE id = ?");
+    $stmt->bind_param("i", $typeid);
+    $stmt->execute();
+    $stmt->store_result();
+
+    $result = $stmt->num_rows;
+
+    $stmt->close();
+    $mysql->close();
+
+    return ($result > 0);
+}
+
+/** 
  * 删除商品分类
  * 
  * @param integer $typeid 分类id

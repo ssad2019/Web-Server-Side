@@ -40,6 +40,7 @@ function delete($typeid) {
     parse_str(file_get_contents('php://input'), $data);
     
     if (!isset($data['typeid'])) returnJson(400);
+    if (!findType($typeid)) returnJson(400);
     deleteType($data['typeid']);
 
     returnJson(200);
