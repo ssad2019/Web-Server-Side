@@ -332,8 +332,8 @@ function findFood($foodid)
 /**
 * 获取菜单列表
 *
-* @param int $foodid 商品ID
-* @return array 包含$id，$typeid，名称($foodname)，价格($price)，描述($description)，商品图片($imgurl)的数组
+* @param int $userid 商品ID
+* @return array 包含多个数组，每个数组包含$id，$typeid，名称($foodname)，价格($price)，描述($description)，商品图片($imgurl)的数组
 */
 function getFoodList($userid) {
     $mysql = initConnection();
