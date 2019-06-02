@@ -387,7 +387,7 @@ PUT /store/food.php
 输入参数:
 
 ```
-foodtype: 商品分类(从已有的分类中选取,传入对应分类编号)
+typeid: 商品分类id(从已有的分类中选取,传入对应分类编号)
 foodname: 商品名称
 price: 商品价格
 description: 商品描述
@@ -422,7 +422,8 @@ POST /store/food.php
 输入参数:
 
 ```
-foodtype: 商品新的分类(有修改就是新的，没修改就是原本的，下同，而且只能选取已有分类)
+foodid: 商品id(从数据库中选中需要修改的商品)
+typeid: 商品新的分类的id(有修改就是新的，没修改就是原本的，下同，而且只能选取已有分类)
 foodname: 商品新的名称
 price: 商品新的价格
 description: 商品新的描述
