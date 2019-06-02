@@ -4,7 +4,7 @@
  * 
  * 负责商品分类获取接口的实现
  * 
- * @author  MikuAlpha
+ * @author  jjx
  * @version 1.0
  */
 include(__DIR__ . '/../../includes/functions.php');
@@ -16,7 +16,7 @@ if (!$userid) returnJson(401);
 
 switch ($_SERVER['REQUEST_METHOD']) {
     case 'GET':
-        get();
+        getList();
         break;
     default:
         returnJson(400);

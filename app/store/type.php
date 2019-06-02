@@ -4,7 +4,7 @@
  * 
  * 负责商品分类修改接口的实现
  * 
- * @author  MikuAlpha
+ * @author  jjx
  * @version 1.0
  */
 include(__DIR__ . '/../../includes/functions.php');
