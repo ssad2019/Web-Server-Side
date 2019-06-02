@@ -41,21 +41,23 @@ function createTables()
         avatar VARCHAR(255) DEFAULT \'\'
     ) DEFAULT CHARSET = utf8');
     $mysql->query('CREATE TABLE IF NOT EXISTS type (
-        id INTEGER AUTO_INCREMENT PRIMARY KEY,
+        id INTEGER AUTO_INCREMENT,
         userid INTEGER NOT NULL,
         typename VARCHAR(32) NOT NULL,
-        constraint t_u_fk foreign key (userid) references user (id) on update cascade on delete cascade
+        PRIMARY KEY (userid, typename),
+        CONSTRAINT t_u_fk FOREIGN KEY (userid) REFERENCES user (id) ON UPDATE CASCADE ON DELETE CASCADE
     ) DEFAULT CHARSET = utf8');
     $mysql->query('CREATE TABLE IF NOT EXISTS menu (
-        id INTEGER AUTO_INCREMENT PRIMARY KEY,
+        id INTEGER AUTO_INCREMENT,
 		userid INTEGER NOT NULL,
 		typeid INTEGER NOT NULL,
         foodname VARCHAR(32) NOT NULL,
         price DECIMAL(8,2) NOT NULL,
         description VARCHAR(255) DEFAULT \'\',
         imgurl VARCHAR(255) DEFAULT \'\',
-        constraint m_u_fk1 foreign key (userid) references user (id) on update cascade on delete cascade,
-        constraint m_t_fk2 foreign key (typeid) references type (id) on update cascade on delete cascade
+        PRIMARY KEY (userid, typeid, foodname),
+        CONSTRAINT m_u_fk1 FOREIGN KEY (userid) REFERENCES user (id) ON UPDATE CASCADE ON DELETE CASCADE,
+        CONSTRAINT m_t_fk2 FOREIGN KEY (typeid) REFERENCES type (id) ON UPDATE CASCADE ON DELETE CASCADE
     ) DEFAULT CHARSET = utf8');
     $mysql->query('CREATE TABLE IF NOT EXISTS order (
         id INTEGER AUTO_INCREMENT PRIMARY KEY,
@@ -65,7 +67,7 @@ function createTables()
         status Boolean NOT NULL,
         info Text DEFAULT \'\',
         imgurl VARCHAR(255) DEFAULT \'\',
-        constraint o_u_fk foreign key (userid) references user (id) on update cascade on delete cascade
+        CONSTRAINT o_u_fk FOREIGN KEY (userid) REFERENCES user (id) ON UPDATE CASCADE ON DELETE CASCADE
     ) DEFAULT CHARSET = utf8');
 
     //ENGINE = InnoDB 
@@ -201,4 +203,69 @@ function editUserInfo($userId, $nickname, $description = "")
 
     $stmt->close();
     $mysql->close();
+}
+
+/** 
+ * 添加商品分类
+ * 
+ * @param integer $userid 用户id
+ * @param string $typename 分类名称
+ * @return array 包含分类ID($typeid)
+ */
+function addType($userid, $typename)
+{
+    $mysql = initConnection();
+    $stmt = $mysql->prepare("INSERT IGNORE INTO type (userid, typename) VALUES (?, ?)");
+    $stmt->bind_param("is", $userid, $typename);
+    $stmt->execute();
+    $stmt->store_result();
+
+    $typeid = $stmt->insert_id;
+
+    $stmt->close();
+    $mysql->close();
+    return array('typeid' => $typeid);
+}
+
+/** 
+ * 删除商品分类
+ * 
+ * @param integer $typeid 分类id
+ * @return void
+ */
+function deleteType($typeid)
+{
+    $mysql = initConnection();
+    $stmt = $mysql->prepare("DELETE FROM type where id = ?");
+    $stmt->bind_param("i", $typeid);
+    $stmt->execute();
+    $stmt->store_result();
+
+    $stmt->close();
+    $mysql->close();
+}
+
+/** 
+ * 获取商品分类
+ * 
+ * @param integer $userid 用户id
+ * @return void
+ */
+function getType($userid)
+{
+    $mysql = initConnection();
+    $stmt = $mysql->prepare("SELECT id, typename FROM type WHERE userid = ?");
+    $stmt->bind_param("i", $userid);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows <= 0) return array();
+
+    $stmt->bind_result($id, $typename);
+    $stmt->fetch();
+
+    $stmt->close();
+    $mysql->close();
+
+    return array('name' => $nickname, 'description' => $description, 'icon' => $avatar);
 }
