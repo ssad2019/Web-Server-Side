@@ -306,3 +306,116 @@ function getTypeList($userid)
 
     return $data;
 }
+
+/** 
+ * 检查菜品是否存在
+ * 
+ * @param int $foodid 菜品ID
+ * @return bool 是否存在
+ */
+function findFood($foodid)
+{
+    $mysql = initConnection();
+    $stmt = $mysql->prepare("SELECT * FROM menu WHERE id = ?");
+    $stmt->bind_param("i", $foodid);
+    $stmt->execute();
+    $stmt->store_result();
+
+    $result = $stmt->num_rows;
+
+    $stmt->close();
+    $mysql->close();
+
+    return ($result > 0);
+}
+
+/**
+* 获取菜单列表
+*
+* @param int $foodid 商品ID
+* @return array 包含$id，$typeid，名称($foodname)，价格($price)，描述($description)，商品图片($imgurl)的数组
+*/
+function getFoodList($userid) {
+    $mysql = initConnection();
+    $stmt = $mysql->prepare("SELECT id, typeid, foodname, price, description, imgurl FROM menu WHERE userid = ?");
+    $stmt->bind_param("i", $userid);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows <= 0) return array()
+
+    $stmt->bind_result($id, $typeid, $foodname, $price, $description, $imgurl);
+    $foodList = array();
+    while($stmt->fetch()) {
+        $foodList[] = array('id' => $id, 'typeid' => $typeid, 'foodname' => $foodname, 'price' => $price, 'description' => $description, 'imgurl' => $imgurl);
+    }
+
+    $stmt->close();
+    $mysql->close();
+
+    return $foodList;
+}
+
+/**
+* 添加菜品
+*
+* @param int $userid 商家id
+* @param int $typeid 分类id
+* @param string $foodname 菜品名称
+* @param double $price 菜品价格
+* @param string $description 菜品描述
+* @param string $imgurl 菜品图片链接
+* @return array 包含商品id($foodid)的数组
+*/
+function addFood($userid, $typeid, $foodname, $price, $description, $imgurl) {
+    $mysql = initConnection();
+    $stmt = $mysql->prepare("INSERT IGNORE INTO menu (userid, typeid, foodname, price, description, imgurl) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("iisdss", $userid, $typeid, $foodname, $price, $description, $imgurl);
+    $stmt->execute();
+    $stmt->store_result();
+    $foodid = $stmt->insert_id;
+
+    $stmt->close();
+    $mysql->close();
+
+    return array('id' => $foodid);
+}
+
+/**
+* 修改菜品
+*
+* @param int $foodid 菜品id
+* @param int $typeid 分类id
+* @param string $foodname 菜品名称
+* @param double $price 菜品价格
+* @param string $description 菜品描述
+* @param string $imgurl 菜品图片链接
+* @return void
+*/
+function modifyFood($foodid, $typeid, $foodname, $price, $description, $imgurl) {
+    $mysql = initConnection();
+    $stmt = $mysql->prepare( "UPDATE menu SET typeid = ?, foodname = ?, price = ?, description = ?, imgurl = ? WHERE id = ?");
+    $stmt->bind_param("isdssi", $typeid, $foodname, $price, $description, $imgurl, $foodid);
+    $stmt->execute();
+    $stmt->store_result();
+
+    $stmt->close();
+    $mysql->close();
+}
+
+/**
+* 删除菜品
+*
+* @param int $foodid 菜品id
+* @return void
+*/
+function deleteFood($foodid) {
+    $mysql = initConnection();
+    $stmt = $mysql->prepare( "DELETE FROM menu WHERE id = ?");
+    $stmt->bind_param("i", $foodid);
+    $stmt->execute();
+    $stmt->store_result();
+
+    $stmt->close();
+    $mysql->close();
+}
