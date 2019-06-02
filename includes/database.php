@@ -215,6 +215,16 @@ function editUserInfo($userId, $nickname, $description = "")
 function addType($userid, $typename)
 {
     $mysql = initConnection();
+    $stmt = $mysql->prepare("SELECT userid, typename FROM type WHERE userid = ? AND typename = ?");
+    $stmt->bind_param("is", $userid, $typename);
+    $stmt->execute();
+    $stmt->store_result();
+	
+	$stmt->bind_result($id, $typeid);
+    $stmt->fetch();
+
+	if ($stmt->num_rows > 0) return array('typeid' => $typeid);
+
     $stmt = $mysql->prepare("INSERT IGNORE INTO type (userid, typename) VALUES (?, ?)");
     $stmt->bind_param("is", $userid, $typename);
     $stmt->execute();
