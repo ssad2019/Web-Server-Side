@@ -184,6 +184,27 @@ function getUserInfo($userid)
 }
 
 /**
+ * 获取用户名对应的ID
+ * 
+ * @param string $username 用户名
+ * @return int|bool 成功时返回用户ID，失败时返回false
+ */
+function getIdByUsername($username)
+{
+    $mysql = initConnection();
+    $stmt = $mysql->prepare("SELECT id FROM user WHERE username = ?");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $stmt->store_result();
+    if ($stmt->num_rows <= 0) return false;
+    $stmt->bind_result($id);
+    $stmt->fetch();
+    $stmt->close();
+    $mysql->close();
+    return $id;
+}
+
+/**
  * 修改用户信息
  * 
  * @param int $userId 用户ID
