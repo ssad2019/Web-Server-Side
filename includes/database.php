@@ -215,16 +215,18 @@ function editUserInfo($userId, $nickname, $description = "")
 function addType($userid, $typename)
 {
     $mysql = initConnection();
-    $stmt = $mysql->prepare("SELECT userid, typename FROM type WHERE userid = ? AND typename = ?");
+    $stmt = $mysql->prepare("SELECT id FROM type WHERE userid = ? AND typename = ?");
     $stmt->bind_param("is", $userid, $typename);
     $stmt->execute();
     $stmt->store_result();
 	
-	$stmt->bind_result($id, $typeid);
-    $stmt->fetch();
-
-	if ($stmt->num_rows > 0) return array('typeid' => $typeid);
-
+	if ($stmt->num_rows > 0) 
+	{
+		$stmt->bind_result($id);
+    	$stmt->fetch();
+		return array('typeid' => $id);
+	}
+	
     $stmt = $mysql->prepare("INSERT IGNORE INTO type (userid, typename) VALUES (?, ?)");
     $stmt->bind_param("is", $userid, $typename);
     $stmt->execute();
@@ -278,12 +280,12 @@ function deleteType($typeid)
 }
 
 /** 
- * 获取商品分类
+ * 获取商品分类列表
  * 
  * @param integer $userid 用户id
- * @return void
+ * @return array 包含多个array，每个array记录分类的ID和名称
  */
-function getType($userid)
+function getTypeList($userid)
 {
     $mysql = initConnection();
     $stmt = $mysql->prepare("SELECT id, typename FROM type WHERE userid = ?");
@@ -292,12 +294,15 @@ function getType($userid)
     $stmt->store_result();
 
     if ($stmt->num_rows <= 0) return array();
-
+    $data = array(); 
     $stmt->bind_result($id, $typename);
-    $stmt->fetch();
+    while($stmt->fetch())
+    {
+    	$data[] = array('typeid' => $id, 'typename' => $typename);
+    }
 
     $stmt->close();
     $mysql->close();
 
-    return array('name' => $nickname, 'description' => $description, 'icon' => $avatar);
+    return $data;
 }

@@ -22,10 +22,10 @@ switch ($_SERVER['REQUEST_METHOD']) {
         returnJson(400);
 }
 
-function get() {
+function getList() {
     global $userid;
 
-    $typelist = getType($userid);
+    $typelist = getTypeList($userid);
 
     returnJson(200, $typelist);
 }
