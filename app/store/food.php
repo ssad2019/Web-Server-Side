@@ -36,14 +36,21 @@ function putFood() {
 }
 
 function postFood() {
-	if (!isset($_POST['foodid']) || !isset($_POST['typeid']) || !isset($_POST['foodname']) || !isset($_POST['price']) || !isset($_POST['description']) || !isset($_POST['imgurl'])) 
+    parse_str(file_get_contents('php://input'), $data);
+	if (!isset($data['foodid']) || !isset($data['typeid']) || !isset($data['foodname']) || !isset($data['price']) || !isset($data['description']) || !isset($data['imgurl'])) 
 		returnJson(400);
-	modifyFood($_POST['id'], $_POST['typeid'], $_POST['foodname'], $_POST['price'], $_POST['description'], $_POST['imgurl']);
+    if(!findFood($data['foodid']))
+        returnJson(400);
+	modifyFood($data['foodid'], $data['typeid'], $data['foodname'], $data['price'], $data['description'], $data['imgurl']);
 	returnJson(200);
 }
 
 function removeFood() {
 	parse_str(file_get_contents('php://input'), $data);
+    if (!isset($data['foodid'])) 
+        returnJson(400);
+    if(!findFood($data['foodid']))
+        returnJson(400);
 	deleteFood($data['foodid']);
 	returnJson(200)
 }
