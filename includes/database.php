@@ -62,9 +62,9 @@ function createTables()
 		userid INTEGER NOT NULL,
 		site INTEGER NOT NULL,
         ordertime Datetime NOT NULL,
-        status Boolean NOT NULL,
+        status Boolean NOT NULL DEFAULT 0,
         info Text NOT NULL,
-        imgurl VARCHAR(255) DEFAULT \'\',
+        remark VARCHAR(255) DEFAULT \'\',
         CONSTRAINT o_u_fk FOREIGN KEY (userid) REFERENCES user (id) ON UPDATE CASCADE ON DELETE CASCADE
     ) DEFAULT CHARSET = utf8');
 
@@ -243,7 +243,7 @@ function addType($userid, $typename)
 	{
 		$stmt->bind_result($id);
     	$stmt->fetch();
-		return array('typeid' => $id);
+		return array('id' => $id);
 	}
 	
     $stmt = $mysql->prepare("INSERT IGNORE INTO type (userid, typename) VALUES (?, ?)");
@@ -432,6 +432,48 @@ function deleteFood($foodid) {
     $mysql = initConnection();
     $stmt = $mysql->prepare( "DELETE FROM menu WHERE id = ?");
     $stmt->bind_param("i", $foodid);
+    $stmt->execute();
+    $stmt->store_result();
+
+    $stmt->close();
+    $mysql->close();
+}
+
+/** 
+ * 检查订单是否存在（安全起见，不应直接调用此函数）
+ * 
+ * @param integer $id 订单ID
+ * @return bool 是否存在
+ */
+function findOrder($id)
+{
+    $mysql = initConnection();
+    $stmt = $mysql->prepare("SELECT * FROM list WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $stmt->store_result();
+
+    $result = $stmt->num_rows;
+
+    $stmt->close();
+    $mysql->close();
+
+    return ($result > 0);
+}
+
+/**
+ * 修改订单状态
+ * 
+ * @param integer $id 订单ID
+ * @param integer $status 待修改订单状态
+
+ * @return void
+ */
+function editOrderStatus($id, $status)
+{
+    $mysql = initConnection();
+    $stmt = $mysql->prepare( "UPDATE list SET status = ? WHERE id = ?");
+    $stmt->bind_param("ii", $status, $id);
     $stmt->execute();
     $stmt->store_result();
 

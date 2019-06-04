@@ -237,9 +237,9 @@ GET /store/food_list.php
             "id": 123, //商品编号
             "type_id": "123", //商品分类对应的id
             "name": "小炒肉", //商品名称
-            "icon": "http://example.com/xxx/xxxx.jpg", //商品图片
             "price": 20, //商品价格
-            "description": "美味便宜，店家招牌菜" //商品描述
+            "description": "美味便宜，店家招牌菜", //商品描述
+            "icon": "http://example.com/xxx/xxxx.jpg" //商品图片
         },
         ...
     ]
