@@ -62,7 +62,7 @@ function createTables()
 		userid INTEGER NOT NULL,
 		site INTEGER NOT NULL,
         ordertime Datetime NOT NULL,
-        status Boolean NOT NULL DEFAULT 0,
+        status Boolean NOT NULL DEFAULT false,
         info Text NOT NULL,
         remark VARCHAR(255) DEFAULT \'\',
         CONSTRAINT o_u_fk FOREIGN KEY (userid) REFERENCES user (id) ON UPDATE CASCADE ON DELETE CASCADE
@@ -479,4 +479,61 @@ function editOrderStatus($id, $status)
 
     $stmt->close();
     $mysql->close();
+}
+
+/**
+* 按时间倒序获取订单列表
+*
+* @param integer $userid 商家ID
+* @param integer $count 获取订单数
+* @return array 多个包含订单编号($id)，订单时间($time)，订单状态($status)的数组构成的叔组
+*/
+function getDESCList($userid, $count) {
+    $mysql = initConnection();
+    $stmt = $mysql->prepare("SELECT id, ordertime, status FROM list WHERE userid = ? ORDER BY ordertime DESC");
+    $stmt->bind_param("i", $userid);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows <= 0) return array();
+
+    $stmt->bind_result($id, $ordertime, $status);
+    $orderList = array();
+    while($stmt->fetch()) {
+        $orderList[] = array('id' => $id, 'time' => $ordertime, 'status' => $status);
+        if(count($orderList) >= $count) break;
+    }
+
+    $stmt->close();
+    $mysql->close();
+
+    return $orderList;
+}
+
+/**
+* 差量获取订单列表
+*
+* @param integer $userid 商家ID
+* @param integer $offset 订单编号
+* @return array 多个包含订单编号($id)，订单时间($time)，订单状态($status)的数组构成的叔组
+*/
+function getOffList($userid, $offset) {
+    $mysql = initConnection();
+    $stmt = $mysql->prepare("SELECT id, ordertime, status FROM list WHERE userid = ? AND id >= ?");
+    $stmt->bind_param("ii", $userid, $offset);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows <= 0) return array();
+
+    $stmt->bind_result($id, $ordertime, $status);
+    $orderList = array();
+    while($stmt->fetch()) {
+        $orderList[] = array('id' => $id, 'time' => $ordertime, 'status' => $status);
+    }
+
+    $stmt->close();
+    $mysql->close();
+
+    return $orderList;
 }
