@@ -255,7 +255,7 @@ function addType($userid, $typename)
 
     $stmt->close();
     $mysql->close();
-    return array('typeid' => $typeid);
+    return array('id' => $typeid);
 }
 
 /** 
@@ -317,7 +317,7 @@ function getTypeList($userid)
     $stmt->bind_result($id, $typename);
     while($stmt->fetch())
     {
-    	$data[] = array('typeid' => $id, 'typename' => $typename);
+    	$data[] = array('id' => $id, 'name' => $typename);
     }
 
     $stmt->close();
@@ -366,7 +366,7 @@ function getFoodList($userid) {
     $stmt->bind_result($id, $typeid, $foodname, $price, $description, $imgurl);
     $foodList = array();
     while($stmt->fetch()) {
-        $foodList[] = array('id' => $id, 'typeid' => $typeid, 'foodname' => $foodname, 'price' => $price, 'description' => $description, 'imgurl' => $imgurl);
+        $foodList[] = array('id' => $id, 'type_id' => $typeid, 'name' => $foodname, 'price' => $price, 'description' => $description, 'icon' => $imgurl);
     }
 
     $stmt->close();
