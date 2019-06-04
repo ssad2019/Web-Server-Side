@@ -486,7 +486,7 @@ function editOrderStatus($id, $status)
 *
 * @param integer $userid 商家ID
 * @param integer $count 获取订单数
-* @return array 多个包含订单编号($id)，订单时间($time)，订单状态($status)的数组构成的叔组
+* @return array 多个包含订单编号($id)，订单时间($time)，订单状态($status)的数组构成的数组
 */
 function getDESCList($userid, $count) {
     $mysql = initConnection();
@@ -523,11 +523,47 @@ function getDESCList($userid, $count) {
 *
 * @param integer $userid 商家ID
 * @param integer $offset 订单编号
-* @return array 多个包含订单编号($id)，订单时间($time)，订单状态($status)的数组构成的叔组
+* @return array 多个包含订单编号($id)，订单时间($time)，订单状态($status)的数组构成的数组
 */
 function getOffList($userid, $offset) {
     $mysql = initConnection();
     $stmt = $mysql->prepare("SELECT id, ordertime, status FROM list WHERE userid = ? AND id >= ?");
+    $stmt->bind_param("ii", $userid, $offset);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows <= 0) return array();
+
+    $stmt->bind_result($id, $ordertime, $status);
+    $orderList = array();
+    while($stmt->fetch()) {
+        switch($status)
+        {
+            case 1:
+                $status = true;
+                break;
+            default:
+                $status = false;  
+        }
+        $orderList[] = array('id' => $id, 'time' => $ordertime, 'status' => $status);
+    }
+
+    $stmt->close();
+    $mysql->close();
+
+    return $orderList;
+}
+
+/**
+* 获取订单详情
+*
+* @param integer $userid 商家ID
+* @param integer $id 订单编号
+* @return array 包含订单编号($id)，订单状态($status),订单内容($content)和订单备注（$remark）的数组
+*/
+function getListItem($userid, $id) {
+    $mysql = initConnection();
+    $stmt = $mysql->prepare("SELECT id, status, remark FROM list WHERE id >= ?");
     $stmt->bind_param("ii", $userid, $offset);
     $stmt->execute();
     $stmt->store_result();
