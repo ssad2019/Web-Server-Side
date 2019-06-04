@@ -611,3 +611,83 @@ function getListItem($userid, $id) {
 
     return $item;
 }
+
+/**
+ * 获取对应typeid的名称
+ * 
+ * @param int $typeid 分类ID
+ * @return string $typename 分类名称
+ */
+function getTypeName($typeid) {
+    $mysql = initConnection();
+    $stmt = $mysql->prepare("SELECT typename FROM type WHERE id = ?");
+    $stmt->bind_param("i", $typeid);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows <= 0) return "null";
+
+    $stmt->bind_result($typename);
+    $stmt->fetch();
+
+    $stmt->close();
+    $mysql->close();
+
+    return $typename;
+
+
+}
+
+/**
+ * 获取对应商家的菜品信息
+ * 
+ * @param int $userid 用户ID
+ * @return array 包含多个数组，每个数组包含$id，名称($name)，商品图片($icon), 分类($tag (分类编号($id), 分类名称($name))), 价格($price)，描述($description)的数组
+ */
+function getFoodInfo($userid) {
+    $mysql = initConnection();
+    $stmt = $mysql->prepare("SELECT id, typeid, foodname, price, description, imgurl FROM menu WHERE userid = ?");
+    $stmt->bind_param("i", $userid);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows <= 0) return array();
+
+    $stmt->bind_result($id, $typeid, $foodname, $price, $description, $imgurl);
+
+    $foodList = array();
+    while($stmt->fetch()) {
+        $typename = getTypeName($typeid);
+        $tag = array('id' => $typeid, 'name' => $typename);
+        $goods[] = array('id' => $id, 'name' => $foodname, 'icon' => $imgurl, 'tag' => $tag, 'price' => $price, 'description' => $description);
+    }
+
+    $stmt->close();
+    $mysql->close();
+
+    return $goods;
+}
+
+/**
+ * 增加订单
+ * 
+ * @param array $data 包含商家id($s)，座位号($n)， 订单内容($order(订单内容($content),备注($remark)))
+ * @return array 包含订单编号($order_id), 下单时间($time)
+ */
+function addOrder($data)  {
+    $temp = json_decode($data['order'], true);
+    $tempJson = json_encode($temp['content']);
+    date_default_timezone_set('PRC');
+    $orderTime = date('Y-m-d h:i:s', time());
+    $mysql = initConnection();
+    $stmt = $mysql->prepare("INSERT IGNORE INTO list (userid, site, ordertime, info, remark) VALUES (?, ?,  ?, ?, ?)");
+    $stmt->bind_param("iisss", $data['s'], $data['n'], $orderTime, $tempJson, $temp['remark']);
+    $stmt->execute();
+    $stmt->store_result();
+    $order_id = $stmt->insert_id;
+
+    $stmt->close();
+    $mysql->close();
+
+    return array('order_id' => $order_id, 'time' => $orderTime);
+}
