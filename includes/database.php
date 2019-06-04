@@ -591,10 +591,15 @@ function getListItem($userid, $id) {
         $inside->execute();
         $inside->store_result();
 
+        if ($inside->num_rows <= 0) {
+        	$inside->close();
+        	continue;
+        }
+
         $inside->bind_result($foodname, $price, $imgurl);
         $inside->fetch();
 
-        $content[] = array('id' => $info[$i]['id'], 'name' => $foodname, 'price' => $price, 'num' => $info[$i]['number'], 'icon' => $imgurl);
+        $content[] = array('id' => $info[$i]['id'], 'name' => $foodname, 'price' => $price, 'num' => $info[$i]['number'], 'icon' => $imgurl); 
 
         $inside->close();
     } 
