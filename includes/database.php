@@ -500,6 +500,14 @@ function getDESCList($userid, $count) {
     $stmt->bind_result($id, $ordertime, $status);
     $orderList = array();
     while($stmt->fetch()) {
+        switch($status)
+        {
+            case 1:
+                $status = true;
+                break;
+            default:
+                $status = false;  
+        }
         $orderList[] = array('id' => $id, 'time' => $ordertime, 'status' => $status);
         if(count($orderList) >= $count) break;
     }
@@ -529,6 +537,14 @@ function getOffList($userid, $offset) {
     $stmt->bind_result($id, $ordertime, $status);
     $orderList = array();
     while($stmt->fetch()) {
+        switch($status)
+        {
+            case 1:
+                $status = true;
+                break;
+            default:
+                $status = false;  
+        }
         $orderList[] = array('id' => $id, 'time' => $ordertime, 'status' => $status);
     }
 
