@@ -1,8 +1,8 @@
 <?php
 /**
- * 修改订单状态
+ * 查看订单详细信息
  * 
- * 负责订单状态修改接口的实现
+ * 负责订单详细信息查看接口的实现
  * 
  * @author  jjx
  * @version 1.0
@@ -15,22 +15,22 @@ $userid = getUserId(verifyToken());
 if (!$userid) returnJson(401);
 
 switch ($_SERVER['REQUEST_METHOD']) {
-    case 'POST':
-        modify();
+    case 'GET':
+        getdetail();
         break;
     default:
         returnJson(400);
 }
 
-function modify() {
+function getdetail() {
     global $userid;
 
     parse_str(file_get_contents('php://input'), $data);
     
-    if (!isset($data['id']) || !isset($data['status'])) returnJson(400);
+    if (!isset($data['id'])) returnJson(400);
     if (!findOrder($userid, $data['id'])) returnJson(400);
 
-    editOrderStatus($data['id'], $data['status']);
+    $iteminfo = getListItem($userid, $data['id']);
 
-    returnJson(200);
+    returnJson(200, $iteminfo);
 }

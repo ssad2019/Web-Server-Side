@@ -441,15 +441,16 @@ function deleteFood($foodid) {
 
 /** 
  * 检查订单是否存在（安全起见，不应直接调用此函数）
- * 
+ *
+ * @param integer $userid 用户ID
  * @param integer $id 订单ID
  * @return bool 是否存在
  */
-function findOrder($id)
+function findOrder($userid, $id)
 {
     $mysql = initConnection();
-    $stmt = $mysql->prepare("SELECT * FROM list WHERE id = ?");
-    $stmt->bind_param("i", $id);
+    $stmt = $mysql->prepare("SELECT * FROM list WHERE userid = ? AND id = ?");
+    $stmt->bind_param("ii", $userid, $id);
     $stmt->execute();
     $stmt->store_result();
 
@@ -563,29 +564,45 @@ function getOffList($userid, $offset) {
 */
 function getListItem($userid, $id) {
     $mysql = initConnection();
-    $stmt = $mysql->prepare("SELECT id, status, remark FROM list WHERE id >= ?");
-    $stmt->bind_param("ii", $userid, $offset);
+    $stmt = $mysql->prepare("SELECT id, status, info, remark FROM list WHERE userid = ? AND id = ?");
+    $stmt->bind_param("ii", $userid, $id);
     $stmt->execute();
     $stmt->store_result();
 
     if ($stmt->num_rows <= 0) return array();
 
-    $stmt->bind_result($id, $ordertime, $status);
-    $orderList = array();
-    while($stmt->fetch()) {
-        switch($status)
-        {
-            case 1:
-                $status = true;
-                break;
-            default:
-                $status = false;  
-        }
-        $orderList[] = array('id' => $id, 'time' => $ordertime, 'status' => $status);
+    $stmt->bind_result($id, $status, $info, $remark);
+    $stmt->fetch();
+
+    $info = json_decode($info,TRUE);
+    switch($status)
+    {
+        case 1:
+            $status = true;
+            break;
+        default:
+            $status = false;  
     }
+    $content = array();
+
+    for($i = 0; $i < count($info); $i ++) {
+        $inside = $mysql->prepare("SELECT foodname, price, imgurl FROM menu WHERE id = ?");
+        $inside->bind_param("i", $info[$i]['id']);
+        $inside->execute();
+        $inside->store_result();
+
+        $inside->bind_result($foodname, $price, $imgurl);
+        $inside->fetch();
+
+        $content[] = array('id' => $info[$i]['id'], 'name' => $foodname, 'price' => $price, 'num' => $info[$i]['number'], 'icon' => $imgurl);
+
+        $inside->close();
+    } 
+
+    $item = array('id' => $id, 'status' => $status, 'content' => $content, 'remark' => $remark);
 
     $stmt->close();
     $mysql->close();
 
-    return $orderList;
+    return $item;
 }
