@@ -140,7 +140,7 @@ GET /store/info.php
     "data": {
     	"name": "SCBOY", //商家名称
     	"description": "孙一峰永远是我大哥！", //商家描述
-    	"icon": "http://example.com/xxx/xxx.jpg", //商家头像
+    	"icon": "http://example.com/xxx/xxx.jpg" //商家头像
     }
 }
 ```
@@ -653,11 +653,11 @@ secret: APP标识码
             {
                 "id": 123456, //商品ID
                 "name": "香辣小龙虾", //商品名
-                "icon": "http://example.com/xxx/xxx.jpg" //商品图标
+                "icon": "http://example.com/xxx/xxx.jpg", //商品图标
                 "tag": { //分类
                     "id": 1, //分类ID
                     "name": "海鲜" //分类名
-                }
+                },
                 "price": 120 //单价
             },
             ...
