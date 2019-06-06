@@ -24,13 +24,11 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
 function modify() {
     global $userid;
-
-    parse_str(file_get_contents('php://input'), $data);
     
-    if (!isset($data['id']) || !isset($data['status'])) returnJson(400);
-    if (!findOrder($userid, $data['id'])) returnJson(400);
+    if (!isset($_POST['id']) || !isset($_POST['status'])) returnJson(400);
+    if (!findOrder($userid, $_POST['id'])) returnJson(400);
 
-    editOrderStatus($data['id'], $data['status']);
+    editOrderStatus($_POST['id'], $_POST['status']);
 
     returnJson(200);
 }

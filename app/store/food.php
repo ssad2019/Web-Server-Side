@@ -36,10 +36,9 @@ function putFood() {
 }
 
 function postFood() {
-    parse_str(file_get_contents('php://input'), $data);
-    if(!findFood($data['foodid']))
+    if(!findFood($_POST['foodid']))
         returnJson(400);
-	modifyFood($data['foodid'], $data['typeid'], $data['foodname'], $data['price'], $data['description'], $data['imgurl']);
+	modifyFood($_POST['foodid'], $_POST['typeid'], $_POST['foodname'], $_POST['price'], $_POST['description'], $_POST['imgurl']);
 	returnJson(200);
 }
 

@@ -24,13 +24,11 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
 function getdetail() {
     global $userid;
-
-    parse_str(file_get_contents('php://input'), $data);
     
-    if (!isset($data['id'])) returnJson(400);
-    if (!findOrder($userid, $data['id'])) returnJson(400);
+    if (!isset($_GET['id'])) returnJson(400);
+    if (!findOrder($userid, $_GET['id'])) returnJson(400);
 
-    $iteminfo = getListItem($userid, $data['id']);
+    $iteminfo = getListItem($userid, $_GET['id']);
 
     returnJson(200, $iteminfo);
 }

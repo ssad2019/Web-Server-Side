@@ -24,17 +24,15 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
 function getList() {
     global $userid;
-
-    parse_str(file_get_contents('php://input'), $data);
     
-    if (!isset($data['count']) && !isset($data['offset'])) returnJson(400);
-    if (isset($data['count']))
+    if (!isset($_GET['count']) && !isset($_GET['offset'])) returnJson(400);
+    if (isset($_GET['count']))
     {
-        $orderlist = getDESCList($userid, $data['count']);
+        $orderlist = getDESCList($userid, $_GET['count']);
     }
-    else if(isset($data['offset']))
+    else if(isset($_GET['offset']))
     {
-        $orderlist = getOffList($userid, $data['offset']);
+        $orderlist = getOffList($userid, $_GET['offset']);
     }
 
     returnJson(200, $orderlist);
