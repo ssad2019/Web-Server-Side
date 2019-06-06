@@ -23,13 +23,11 @@ switch ($_SERVER['REQUEST_METHOD']) {
 }
 
 function getInfo() {
-	parse_str(file_get_contents('php://input'), $data);
-	if (!isset($data['s']) || !isset($data['secret'])) 
-		returnJson(400);
-	if($data['secret'] != 123456)
-		returnJson(400);
-	$userInfo = getUserInfo($data['s']);
-	$foodInfo = getFoodInfo($data['s']);
+	if (!isset($_GET['s'])) returnJson(400);
+	if (!isset($_GET['secret'])) die(file_get_contents('./404.html'));
+
+	$userInfo = getUserInfo($_GET['s']);
+	$foodInfo = getFoodInfo($_GET['s']);
 
 	//若头像为空，则设置为默认头像
     if ($userInfo['icon'] == '') 
@@ -40,9 +38,8 @@ function getInfo() {
 }
 
 function postOrder() {
-	parse_str(file_get_contents('php://input'), $data);
-	if (!isset($data['s']) || !isset($data['n']) || !isset($data['order'])) 
+	if (!isset($_POST['s']) || !isset($_POST['n']) || !isset($_POST['order'])) 
 		returnJson(400);
-	$returnArray = addOrder($data);
+	$returnArray = addOrder($_POST);
 	returnJson(200, $returnArray);
 }
