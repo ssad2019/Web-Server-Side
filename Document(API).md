@@ -107,7 +107,7 @@ POST /store/icon.php
     "status": 200, //返回状态码
     "msg": "OK", //状态码描述
     "data": {
-        "url": "http://example.com/xxx/xxxx.jpg" //服务器保存的图片路径
+        "url": "http://example.com/xxx/xxxx.jpg" //服务器保存的图片路径（服务器保存图片，生成地址，并将其与当前登录用户绑定）
     }
 }
 ```
@@ -366,7 +366,7 @@ POST /store/food_icon.php
     "status": 200, //返回状态码
     "msg": "OK", //状态码描述
     "data": {
-        "url": "http://example.com/xxx/xxxx.jpg" //服务器保存的图片路径
+        "url": "http://example.com/xxx/xxxx.jpg" //服务器保存的图片路径（服务器仅保存图片并生成地址，不会与对应商品进行绑定，需在“添加商品”时将此链接一并上传）
     }
 }
 ```
