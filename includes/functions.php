@@ -9,6 +9,9 @@
  */
 include_once(__DIR__ . '/../settings/settings.php');
 
+//临时增加跨域问题处理
+header('Access-Control-Allow-Origin:*');
+
 //状态码列表
 const STATUS_CODE = array(
     200 => 'OK',
