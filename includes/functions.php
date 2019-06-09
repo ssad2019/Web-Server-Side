@@ -11,6 +11,12 @@ include_once(__DIR__ . '/../settings/settings.php');
 
 //临时增加跨域问题处理
 header('Access-Control-Allow-Origin:*');
+header('Access-Control-Allow-Headers:Content-Type, Authorization, Accept, Origin, X-Requested-With');
+header('Access-Control-Allow-Methods:PUT,POST,GET,DELETE');
+
+//DEBUG
+ini_set("display_errors","On");
+error_reporting(E_ALL);
 
 //状态码列表
 const STATUS_CODE = array(
