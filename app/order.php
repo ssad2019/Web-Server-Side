@@ -40,6 +40,8 @@ function getInfo() {
 function postOrder() {
 	if (!isset($_POST['s']) || !isset($_POST['n']) || !isset($_POST['order'])) 
 		returnJson(400);
+	if(!findUserID($_POST['s']))
+        returnJson(400);
 	$returnArray = addOrder($_POST);
 	returnJson(200, $returnArray);
 }

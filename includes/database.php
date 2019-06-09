@@ -720,5 +720,26 @@ function addOrder($data)  {
     $stmt->close();
     $mysql->close();
 
-    return array('order_id' => $order_id, 'time' => $orderTime);
+    return array('order_id' => getOffset($order_id, $orderTime), 'time' => $orderTime);
+}
+
+/** 
+ * 
+ * @param int $userid 用户id
+ * @return bool 是否存在
+ */
+function findUserID($userid)
+{
+    $mysql = initConnection();
+    $stmt = $mysql->prepare("SELECT * FROM user WHERE id = ?");
+    $stmt->bind_param("i", $userid);
+    $stmt->execute();
+    $stmt->store_result();
+
+    $result = $stmt->num_rows;
+
+    $stmt->close();
+    $mysql->close();
+
+    return ($result > 0);
 }
