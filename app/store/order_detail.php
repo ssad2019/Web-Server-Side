@@ -26,9 +26,10 @@ function getdetail() {
     global $userid;
     
     if (!isset($_GET['id'])) returnJson(400);
-    if (!findOrder($userid, $_GET['id'])) returnJson(400);
+    $id = getOrderId($_GET['id']);
+    if (!findOrder($userid, $id)) returnJson(400);
 
-    $iteminfo = getListItem($userid, $_GET['id']);
+    $iteminfo = getListItem($userid, $id);
 
     returnJson(200, $iteminfo);
 }

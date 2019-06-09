@@ -32,7 +32,8 @@ function getList() {
     }
     else if(isset($_GET['offset']))
     {
-        $orderlist = getOffList($userid, $_GET['offset']);
+        $offset = getOrderId($_GET['offset']);
+        $orderlist = getOffList($userid, $offset);
     }
 
     returnJson(200, $orderlist);

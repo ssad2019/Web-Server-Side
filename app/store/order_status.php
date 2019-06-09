@@ -26,9 +26,10 @@ function modify() {
     global $userid;
     
     if (!isset($_POST['id']) || !isset($_POST['status'])) returnJson(400);
-    if (!findOrder($userid, $_POST['id'])) returnJson(400);
+    $id = getOrderId($_POST['id']);
+    if (!findOrder($userid, $id)) returnJson(400);
 
-    editOrderStatus($_POST['id'], $_POST['status']);
+    editOrderStatus($id, $_POST['status']);
 
     returnJson(200);
 }

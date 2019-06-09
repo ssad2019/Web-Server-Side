@@ -440,6 +440,37 @@ function deleteFood($foodid) {
 }
 
 /** 
+ * 根据订单编号获取订单id
+ *
+ * @param string $offset 订单编号
+ * @return integer $id 订单ID
+ */
+function getOrderId($offset)
+{
+    $offset = substr($offset, -8);
+    $id = ltrim($offset, "0");
+
+    return $id;
+}
+
+/** 
+ * 生成订单编号
+ *
+ * @param integer $id 订单ID
+ * @param string $ordertime 订单时间
+ * @return string $offset 订单编号
+ */
+function getOffset($id, $ordertime)
+{
+    $id = str_pad($id, 8, "0", STR_PAD_LEFT);
+    $ordertime = substr($ordertime, 0, 10);
+    $ordertime = str_replace('-','',$ordertime);
+    $offset = $ordertime.$id;
+
+    return $offset;
+}
+
+/** 
  * 检查订单是否存在（安全起见，不应直接调用此函数）
  *
  * @param integer $userid 用户ID
@@ -487,7 +518,7 @@ function editOrderStatus($id, $status)
 *
 * @param integer $userid 商家ID
 * @param integer $count 获取订单数
-* @return array 多个包含订单编号($id)，订单时间($time)，订单状态($status)的数组构成的数组
+* @return array 多个包含订单编号，订单时间($time)，订单状态($status)的数组构成的数组
 */
 function getDESCList($userid, $count) {
     $mysql = initConnection();
@@ -509,7 +540,7 @@ function getDESCList($userid, $count) {
             default:
                 $status = false;  
         }
-        $orderList[] = array('id' => $id, 'time' => $ordertime, 'status' => $status);
+        $orderList[] = array('id' => getOffset($id, $ordertime), 'time' => $ordertime, 'status' => $status);
         if(count($orderList) >= $count) break;
     }
 
@@ -524,7 +555,7 @@ function getDESCList($userid, $count) {
 *
 * @param integer $userid 商家ID
 * @param integer $offset 订单编号
-* @return array 多个包含订单编号($id)，订单时间($time)，订单状态($status)的数组构成的数组
+* @return array 多个包含订单编号，订单时间($time)，订单状态($status)的数组构成的数组
 */
 function getOffList($userid, $offset) {
     $mysql = initConnection();
@@ -546,7 +577,7 @@ function getOffList($userid, $offset) {
             default:
                 $status = false;  
         }
-        $orderList[] = array('id' => $id, 'time' => $ordertime, 'status' => $status);
+        $orderList[] = array('id' => getOffset($id, $ordertime), 'time' => $ordertime, 'status' => $status);
     }
 
     $stmt->close();
@@ -560,18 +591,18 @@ function getOffList($userid, $offset) {
 *
 * @param integer $userid 商家ID
 * @param integer $id 订单编号
-* @return array 包含订单编号($id)，订单状态($status),订单内容($content)和订单备注（$remark）的数组
+* @return array 包含订单编号，订单状态($status),订单内容($content)和订单备注（$remark）的数组
 */
 function getListItem($userid, $id) {
     $mysql = initConnection();
-    $stmt = $mysql->prepare("SELECT id, status, info, remark FROM list WHERE userid = ? AND id = ?");
+    $stmt = $mysql->prepare("SELECT id, ordertime, status, info, remark FROM list WHERE userid = ? AND id = ?");
     $stmt->bind_param("ii", $userid, $id);
     $stmt->execute();
     $stmt->store_result();
 
     if ($stmt->num_rows <= 0) return array();
 
-    $stmt->bind_result($id, $status, $info, $remark);
+    $stmt->bind_result($id, $ordertime, $status, $info, $remark);
     $stmt->fetch();
 
     $info = json_decode($info,TRUE);
@@ -604,7 +635,7 @@ function getListItem($userid, $id) {
         $inside->close();
     } 
 
-    $item = array('id' => $id, 'status' => $status, 'content' => $content, 'remark' => $remark);
+    $item = array('id' => getOffset($id, $ordertime), 'status' => $status, 'content' => $content, 'remark' => $remark);
 
     $stmt->close();
     $mysql->close();
