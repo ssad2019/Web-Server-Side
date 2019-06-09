@@ -556,7 +556,7 @@ GET /store/order_detail.php
 输入参数:
 
 ```
-id: 订单ID
+id: 订单编号
 ```
 
 输出(JSON格式):
@@ -599,7 +599,7 @@ POST /store/order_status.php
 输入参数:
 
 ```
-id: 订单ID
+id: 订单编号
 status: 要设置的订单状态，0为未完成，1为已完成
 ```
 
