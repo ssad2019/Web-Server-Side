@@ -8,6 +8,7 @@
  * @version 1.0
  */
 include('../settings/settings.php');
+include('../includes/functions.php');
 
 if ($_GET['file'] == '') {
     http_response_code(404);
