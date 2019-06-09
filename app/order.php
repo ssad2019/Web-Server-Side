@@ -24,6 +24,8 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
 function getInfo() {
 	if (!isset($_GET['s'])) returnJson(400);
+	if(!findUserID($_GET['s']))
+        returnJson(400);
 	if (!isset($_GET['secret'])) die(file_get_contents('./404.html'));
 
 	$userInfo = getUserInfo($_GET['s']);
