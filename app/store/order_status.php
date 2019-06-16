@@ -26,6 +26,7 @@ function modify() {
     global $userid;
     
     if (!isset($_POST['id']) || !isset($_POST['status'])) returnJson(400);
+    if (empty($_POST['id']) || empty($_POST['status'])) returnJson(400);
     $id = getOrderId($_POST['id']);
     if (!findOrder($userid, $id)) returnJson(400);
 

@@ -27,10 +27,7 @@ function getList() {
 
     $typelist = getTypeList($userid);
 
-    if(empty($typelist)){
-    	$ii = 'null';
-    	returnJson(200, $ii);
-    }
+    if(empty($typelist)) returnJson(200, null);
 
     returnJson(200, $typelist);
 }
