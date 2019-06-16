@@ -10,7 +10,7 @@
 include(__DIR__ . '/../../includes/functions.php');
 include(__DIR__ . '/../../includes/database.php');
 include(__DIR__ . '/../../includes/auth.php');
-include(__DIR__ . '/../../settings/settings.php');
+//include(__DIR__ . '/../../settings/settings.php');
 
 $userid = getUserId(verifyToken());
 if (!$userid) returnJson(401);
