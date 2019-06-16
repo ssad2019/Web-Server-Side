@@ -709,7 +709,7 @@ function addOrder($data)  {
     $temp = json_decode($data['order'], true);
     $tempJson = json_encode($temp['content']);
     date_default_timezone_set('PRC');
-    $orderTime = date('Y-m-d h:i:s', time());
+    $orderTime = date('Y-m-d H:i:s', time());
     $mysql = initConnection();
     $stmt = $mysql->prepare("INSERT IGNORE INTO list (userid, site, ordertime, info, remark) VALUES (?, ?,  ?, ?, ?)");
     $stmt->bind_param("iisss", $data['s'], $data['n'], $orderTime, $tempJson, $temp['remark']);

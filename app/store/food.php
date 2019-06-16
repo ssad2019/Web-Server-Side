@@ -31,11 +31,17 @@ switch ($_SERVER['REQUEST_METHOD']) {
 function putFood() {
 	global $userid;
 	parse_str(file_get_contents('php://input'), $data);
+    if(empty($data['typeid']) || empty($data['foodname']) || empty($data['price']))
+        returnJson(400);
 	$returnArray = addFood($userid, $data['typeid'], $data['foodname'], $data['price'], $data['description'], $data['imgurl']);
+    if($returnArray['id'] == 0 || empty($returnArray))
+        returnJson(400);
     returnJson(200, $returnArray);
 }
 
 function postFood() {
+    if(empty($data['foodid']) || empty($data['typeid']) || empty($data['foodname']) || empty($data['price']))
+        returnJson(400);
     if(!findFood($_POST['foodid']))
         returnJson(400);
 	modifyFood($_POST['foodid'], $_POST['typeid'], $_POST['foodname'], $_POST['price'], $_POST['description'], $_POST['imgurl']);
@@ -44,7 +50,7 @@ function postFood() {
 
 function removeFood() {
 	parse_str(file_get_contents('php://input'), $data);
-    if (!isset($data['foodid'])) 
+    if (!isset($data['foodid']) || empty($data['foodid'])) 
         returnJson(400);
     if(!findFood($data['foodid']))
         returnJson(400);

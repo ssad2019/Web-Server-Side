@@ -44,6 +44,13 @@ function postOrder() {
 		returnJson(400);
 	if(!findUserID($_POST['s']))
         returnJson(400);
-	$returnArray = addOrder($_POST);
-	returnJson(200, $returnArray);
+    $data = json_decode($_POST['order'], true);
+    if ($data && (is_object($data)) || (is_array($data) && !empty($data))) {
+        $returnArray = addOrder($_POST);
+		returnJson(200, $returnArray);
+    }
+    else{
+    	returnJson(400);
+    }
+	
 }
