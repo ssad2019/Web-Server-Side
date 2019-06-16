@@ -31,8 +31,7 @@ function getList() {
     		$food['imgurl'] = DEFAULT_AVATAR;
     }
     if(empty($foodList)){
-        $emptyList = array('null');
-        returnJson(200, $emptyList);
+        returnJson(200, null);
     }
 
 
