@@ -30,7 +30,7 @@ function add() {
     
     parse_str(file_get_contents('php://input'), $data);
 
-    if (!isset($data['typename']) || empty($data['typename'])) returnJson(400);
+    if (!isset($data['typename']) || $data['typename'] == '') returnJson(400);
     $typeid = addType($userid, $data['typename']);
 
     returnJson(200, $typeid);
@@ -39,7 +39,7 @@ function add() {
 function delete() {
     parse_str(file_get_contents('php://input'), $data);
     
-    if (!isset($data['typeid']) || empty($data['typeid'])) returnJson(400);
+    if (!isset($data['typeid']) || $data['typeid'] == '') returnJson(400);
     if (!findType($data['typeid'])) returnJson(400);
     deleteType($data['typeid']);
 

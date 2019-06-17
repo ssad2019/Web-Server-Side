@@ -28,12 +28,12 @@ function getList() {
     if (!isset($_GET['count']) && !isset($_GET['offset'])) returnJson(400);
     if (isset($_GET['count']))
     {
-        if(empty($_GET['count'])) returnJson(400);
+        if($_GET['count'] == '') returnJson(400);
         $orderlist = getDESCList($userid, $_GET['count']);
     }
     else if(isset($_GET['offset']))
     {
-        if(empty($_GET['offset'])) returnJson(400);
+        if($_GET['offset'] == '') returnJson(400);
         $offset = getOrderId($_GET['offset']);
         $orderlist = getOffList($userid, $offset);
     }

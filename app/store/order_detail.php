@@ -25,7 +25,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
 function getdetail() {
     global $userid;
     
-    if (!isset($_GET['id']) || empty($_GET['id'])) returnJson(400);
+    if (!isset($_GET['id']) || $_GET['id'] == '') returnJson(400);
     $id = getOrderId($_GET['id']);
     if (!findOrder($userid, $id)) returnJson(400);
 
