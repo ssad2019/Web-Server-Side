@@ -5,7 +5,7 @@
  * 负责商品分类修改接口的实现
  * 
  * @author  jjx
- * @version 1.0
+ * @version 1.1
  */
 include(__DIR__ . '/../../includes/functions.php');
 include(__DIR__ . '/../../includes/database.php');
@@ -37,10 +37,12 @@ function add() {
 }
 
 function delete() {
+    global $userid;
+
     parse_str(file_get_contents('php://input'), $data);
     
     if (!isset($data['typeid']) || $data['typeid'] == '') returnJson(400);
-    if (!findType($data['typeid'])) returnJson(400);
+    if (!findType($userid, $data['typeid'])) returnJson(400);
     deleteType($data['typeid']);
 
     returnJson(200);

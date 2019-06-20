@@ -260,15 +260,16 @@ function addType($userid, $typename)
 
 /** 
  * 检查分类是否存在（安全起见，不应直接调用此函数）
- * 
+ *
+ * @param integer $userid 用户ID
  * @param integer $typeid 分类ID
  * @return bool 是否存在
  */
-function findType($typeid)
+function findType($userid, $typeid)
 {
     $mysql = initConnection();
-    $stmt = $mysql->prepare("SELECT * FROM type WHERE id = ?");
-    $stmt->bind_param("i", $typeid);
+    $stmt = $mysql->prepare("SELECT * FROM type WHERE id = ? AND userid = ?");
+    $stmt->bind_param("ii", $typeid, $userid);
     $stmt->execute();
     $stmt->store_result();
 
@@ -595,14 +596,14 @@ function getOffList($userid, $offset) {
 */
 function getListItem($userid, $id) {
     $mysql = initConnection();
-    $stmt = $mysql->prepare("SELECT id, ordertime, status, info, remark FROM list WHERE userid = ? AND id = ?");
+    $stmt = $mysql->prepare("SELECT ordertime, status, info, remark FROM list WHERE userid = ? AND id = ?");
     $stmt->bind_param("ii", $userid, $id);
     $stmt->execute();
     $stmt->store_result();
 
     if ($stmt->num_rows <= 0) return array();
 
-    $stmt->bind_result($id, $ordertime, $status, $info, $remark);
+    $stmt->bind_result($ordertime, $status, $info, $remark);
     $stmt->fetch();
 
     $info = json_decode($info,TRUE);
