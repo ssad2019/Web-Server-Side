@@ -330,14 +330,14 @@ function getTypeList($userid)
 /** 
  * 检查菜品是否存在
  * 
- * @param int $foodid 菜品ID
+ * @param int $userid, $foodid 商家ID, 菜品ID
  * @return bool 是否存在
  */
-function findFood($foodid)
+function findFood($userid, $foodid)
 {
     $mysql = initConnection();
-    $stmt = $mysql->prepare("SELECT * FROM menu WHERE id = ?");
-    $stmt->bind_param("i", $foodid);
+    $stmt = $mysql->prepare("SELECT * FROM menu WHERE id = ? AND userid = ?");
+    $stmt->bind_param("ii", $foodid, $userid);
     $stmt->execute();
     $stmt->store_result();
 
