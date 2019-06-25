@@ -568,6 +568,7 @@ id: 订单编号
     "data": {
         "id": 123123123, //订单ID
         "status": false, //订单状态，false为未完成，true为已完成
+        "site": 4, //座位号
         "content": [ //订单内容
             {
                 "id": 123456, //商品ID

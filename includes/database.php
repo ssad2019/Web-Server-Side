@@ -596,14 +596,14 @@ function getOffList($userid, $offset) {
 */
 function getListItem($userid, $id) {
     $mysql = initConnection();
-    $stmt = $mysql->prepare("SELECT ordertime, status, info, remark FROM list WHERE userid = ? AND id = ?");
+    $stmt = $mysql->prepare("SELECT site, ordertime, status, info, remark FROM list WHERE userid = ? AND id = ?");
     $stmt->bind_param("ii", $userid, $id);
     $stmt->execute();
     $stmt->store_result();
 
     if ($stmt->num_rows <= 0) return array();
 
-    $stmt->bind_result($ordertime, $status, $info, $remark);
+    $stmt->bind_result($site, $ordertime, $status, $info, $remark);
     $stmt->fetch();
 
     $info = json_decode($info,TRUE);
@@ -636,7 +636,7 @@ function getListItem($userid, $id) {
         $inside->close();
     } 
 
-    $item = array('id' => getOffset($id, $ordertime), 'status' => $status, 'content' => $content, 'remark' => $remark);
+    $item = array('id' => getOffset($id, $ordertime), 'status' => $status, 'site' => $site, 'content' => $content, 'remark' => $remark);
 
     $stmt->close();
     $mysql->close();
