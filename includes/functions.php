@@ -105,7 +105,7 @@ function getImageType($image) {
  * @return void
  */
 function getImage($filename) {
-    $url = "https://" . OSS_INTERNAL_DOMAIN  . '/' . $filename;
+    $url = "https://" . OSS_INTERNAL_DOMAIN  . '/' . $filename . '?x-oss-process=style/thumbnail';
 
     switch (getImageType(($filename))) {
         case 'png':
