@@ -31,6 +31,8 @@ switch ($_SERVER['REQUEST_METHOD']) {
 function putFood() {
 	global $userid;
 	parse_str(file_get_contents('php://input'), $data);
+    if (!isset($data['typeid']) ||  !isset($data['foodname']) || !isset($data['price']) ||  !isset($data['description']) || !isset($data['imgurl'])) 
+        returnJson(400);
     if(empty($data['typeid']) || empty($data['foodname']) || empty($data['price']))
         returnJson(400);
     if(!findType($userid, $data['typeid']))
@@ -43,6 +45,8 @@ function putFood() {
 
 function postFood() {
     global $userid;
+    if (!isset($_POST['typeid']) ||  !isset($_POST['foodname']) || !isset($_POST['price']) ||  !isset($_POST['description']) || !isset($_POST['imgurl'])) 
+        returnJson(400);
     if(empty($_POST['foodid']) || empty($_POST['typeid']) || empty($_POST['foodname']) || empty($_POST['price']))
         returnJson(400);
     if(!findFood($userid, $_POST['foodid']))
